@@ -5,11 +5,11 @@ def rename_images(directory):
     # Получаем список всех файлов в директории
     files = os.listdir(directory)
     
-    # Фильтруем только изображения (можно добавить другие расширения при необходимости)
+    # Фильтруем только изображения
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']
     images = [f for f in files if os.path.splitext(f)[1].lower() in image_extensions]
     
-    # Сортируем изображения по имени (опционально)
+    # Сортируем изображения по имени 
     images.sort()
     
     # Переименовываем изображения
