@@ -22,15 +22,15 @@
 
 ## 🛠 Установка
 
-1. Скопировать данную директорию в каталог ~/.config/
-2. Скопировать конфиги `polybar`, `rofi`, `sxhkd`, `alacritty` в каталог ~/.config/
+1. Скопировать репозиторий в каталог ~/Documents/Systems (для путей скриптов) и данную директорию в каталог ~/.config/
+2. Скопировать конфиги `polybar`, `rofi`, `sxhkd`, `alacritty`, `.Xresources` в каталог ~/.config/
 
 ## 📦 Зависимости
 
 - Пакеты: bspwm, sxhkd, rofi, polybar, networkmanager, libnotify, dunst, nm-connection-editor, brightnessctl
 - Шрифты: ttf-jetbrains-mono-nerd, ttf-material-design-icons, ttf-unifont
 
-## Картинки
+## 🖼️ Картинки
 
 ![Screenshot](./assets/img-2.png)
 
