@@ -2,7 +2,7 @@
 ################ SXHKD-config ################
 ##############################################
 
-# installed packages: bspwm, sxhkd, rofi, polybar, networkmanager, libnotify, dunst, nm-connection-editor, brightnessctl, thunar
+# installed packages: bspwm, sxhkd, rofi, polybar, networkmanager, libnotify, dunst, nm-connection-editor, brightnessctl
 # font: ttf-jetbrains-mono-nerd, ttf-material-design-icons, ttf-unifont
 
 # =======================
