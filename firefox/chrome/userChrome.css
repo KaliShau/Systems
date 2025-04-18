@@ -1,0 +1,348 @@
+:root {
+  /* Основные настройки интерфейса */
+  --arrowpanel-menuitem-padding: 0 4px !important; /* Отступы пунктов меню */
+  --tab-curve-width: 0px; /* Ширина закругления вкладок */
+  --tabs-border: transparent !important; /* Прозрачная граница вкладок */
+  --tab-border-radius: 0 !important; /* Отсутствие скругления углов вкладок */
+
+  /* Цветовые переменные */
+  --bg: #2c2c2c; /* Основной фон */
+  --icon-color: #e0fbfc; /* Цвет иконок */
+  --sidebar-color: #e0fbfc; /* Цвет боковой панели */
+  --tab-selected-bg: #274557; /* Фон активной вкладки */
+  --urlbar-color: #98c1d9; /* Цвет адресной строки */
+  --urlbar-focused-color: #e0fbfc; /* Цвет адресной строки в фокусе */
+  --urlbar-results-color: #e0fbfc; /* Цвет результатов в адресной строке */
+  --urlbar-results-url-color: #98c1d9; /* Цвет URL в результатах */
+
+  /* Шрифты браузера */
+  --urlbar-results-font-family: "JetBrainsMono Nerd Font", medium; /* Шрифт для результатов */
+  --urlbar-results-font-weight: 700; /* Жирность шрифта */
+
+  /* Переопределенные переменные Firefox */
+  --autocomplete-popup-background: var(
+    --bg
+  ) !important; /* Фон автодополнения */
+  --default-arrowpanel-background: var(
+    --bg
+  ) !important; /* Фон выпадающих панелей */
+  --default-arrowpanel-color: #fefefa !important; /* Цвет текста в панелях */
+  --lwt-toolbarbutton-icon-fill: var(
+    --icon-color
+  ) !important; /* Цвет иконок панели инструментов */
+  --panel-disabled-color: #f9f9fa80; /* Цвет отключенных элементов */
+  --toolbar-bgcolor: var(--bg) !important; /* Фон панели инструментов */
+  --urlbar-separator-color: transparent !important; /* Прозрачный разделитель */
+}
+
+/* Стили для активной вкладки */
+.tabbrowser-tab[selected="true"] .tab-background {
+  background: var(--tab-selected-bg) !important;
+}
+
+/* Уменьшение размера неактивных вкладок */
+.tabbrowser-tab[fadein]:not([selected]):not([pinned]) {
+  max-width: 150px !important;
+  min-width: 150px !important;
+}
+
+/* Увеличение размера активной вкладки */
+.tabbrowser-tab[selected][fadein]:not([pinned]) {
+  max-width: 200px !important;
+  min-width: 200px !important;
+}
+
+/* Уменьшение отступа между закрепленными и обычными вкладками */
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])
+  > #tabbrowser-arrowscrollbox
+  > .tabbrowser-tab[first-visible-unpinned-tab] {
+  margin-inline-start: initial !important;
+}
+
+/* Отображение фавиконов для закрепленных вкладок (без текста) */
+hbox.tab-content[pinned="true"] .tab-icon-image {
+  display: initial !important;
+}
+
+hbox.tab-content[pinned="true"] .tab-text {
+  display: none !important;
+}
+
+/* Цвет индикатора загрузки вкладки */
+#tabbrowser-tabs {
+  --tab-loading-fill: #033433 !important;
+}
+
+/* Скрытие линии вкладки */
+.tab-line {
+  display: none !important;
+}
+
+/* Кастомизация вкладок браузера */
+.tabbrowser-tab {
+  border-radius: 8px !important; /* Скругление углов */
+  height: 50px !important; /* Высота */
+  margin-top: 6px !important; /* Отступы */
+  margin-left: 6px !important;
+  margin-bottom: 4px !important;
+  max-height: 80% !important; /* Максимальная высота */
+  min-height: 80% !important; /* Минимальная высота */
+}
+
+/* Стиль для вкладок без звука */
+.tabbrowser-tab[soundplaying="false"] {
+  background-color: #ee6c4d !important;
+}
+
+/* Скрытие иконки звука */
+.tab-icon-sound {
+  display: none !important;
+}
+
+/* Скрытие вторичной метки для вкладок со звуком */
+.tab-secondary-label[soundplaying="true"]:not([pictureinpicture]) {
+  display: none;
+}
+
+/* Стили для иконок */
+.urlbar-icon > image {
+  fill: var(--icon-color) !important;
+  color: var(--icon-color) !important;
+}
+
+.toolbarbutton-text {
+  color: var(--icon-color) !important;
+}
+.urlbar-icon {
+  color: var(--icon-color) !important;
+}
+
+/* Стили для результатов адресной строки */
+#urlbar-results {
+  font-family: var(--urlbar-results-font-family);
+  font-weight: var(--urlbar-results-font-weight);
+  font-size: 12pt !important;
+  color: var(--urlbar-results-color) !important;
+}
+
+/* Удаление границ у неактивной адресной строки */
+#urlbar:not([focused]) > #urlbar-background {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Цвета для разных типов результатов */
+.urlbarView-row[type="bookmark"] > span {
+  color: green !important; /* Закладки - зеленые */
+}
+
+.urlbarView-row[type="switchtab"] > span {
+  color: orange !important; /* Переключение вкладок - оранжевые */
+}
+
+/* Стили для URL и панели поиска */
+.urlbarView-url,
+.search-panel-one-offs-container {
+  color: var(--urlbar-results-url-color) !important;
+  font-family: var(--urlbar-results-font-family);
+  font-weight: var(--urlbar-results-font-weight);
+  font-size: 12pt !important;
+}
+
+/* Скрытие иконок в результатах */
+.urlbarView-favicon,
+.urlbarView-type-icon {
+  display: none !important;
+}
+
+/* Стили поля ввода адресной строки */
+#urlbar-input {
+  font-size: 12pt !important;
+  color: var(--urlbar-color) !important;
+  font-family: var(--urlbar-results-font-family) !important;
+  font-weight: var(--urlbar-results-font-weight) !important;
+  text-align: left !important; /* Выравнивание по центру */
+}
+
+/* Скрытие элементов защиты от отслеживания */
+tracking-protection-icon-container,
+#identity-box {
+  display: none;
+}
+
+/* Удаление фонового изображения панели инструментов */
+toolbar {
+  background-image: none !important;
+}
+
+/* Стили фона адресной строки */
+#urlbar-background {
+  outline: none !important;
+  opacity: 0.95 !important; /* Небольшая прозрачность */
+}
+
+/* Удаление границ */
+#navigator-toolbox,
+toolbaritem {
+  border: none !important;
+}
+
+/* Фон адресной строки */
+#urlbar-background {
+  background-color: var(--bg) !important;
+  border: none !important;
+}
+
+/* Фон элементов панели инструментов */
+.toolbar-items {
+  background-color: var(--bg) !important;
+}
+
+/* Фон поиска в боковой панели */
+#sidebar-search-container {
+  background-color: var(--bg) !important;
+}
+
+/* Скрытие стрелок панелей */
+box.panel-arrowbox {
+  display: none;
+}
+
+/* Стили контента панелей */
+box.panel-arrowcontent {
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+/* Стили вкладок */
+tab.tabbrowser-tab {
+  overflow: hidden;
+}
+
+tab.tabbrowser-tab:hover {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Тень при наведении */
+}
+
+/* Отступы навигационной панели */
+toolbar#nav-bar {
+  padding: 8px !important;
+}
+
+toolbar#nav-bar {
+  padding: 4px !important;
+}
+
+/* Размеры и позиционирование адресной строки */
+#urlbar {
+  max-width: 70% !important;
+  margin: 0 15% !important; /* Центрирование */
+}
+
+/* Цвет текста при фокусе */
+#urlbar-input:focus {
+  color: var(--urlbar-focused-color) !important;
+}
+
+/* Стили для мегабара (новый дизайн адресной строки) */
+.megabar[breakout-extend="true"]:not([open="true"]) > #urlbar-background {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Удаление тени у кнопок */
+toolbarbutton {
+  box-shadow: none !important;
+}
+
+/* Стили при наведении на элементы */
+toolbarbutton.bookmark-item:hover,
+#PlacesToolbar menu:hover,
+#PlacesToolbar menuitem:hover {
+  background-color: var(--tab-selected-bg) !important;
+}
+
+/* Цвет иконок */
+.close-icon,
+.urlbar-icon {
+  fill: var(--icon-color) !important;
+}
+
+/* Цвет боковой панели */
+.sidebar-placesTree {
+  color: var(--sidebar-color) !important;
+}
+
+#sidebar-switcher-target {
+  color: white !important;
+}
+
+/* Фон боковой панели */
+#sidebar-box {
+  --sidebar-background-color: var(--bg) !important;
+}
+
+/* Скрытие разделителя боковой панели */
+splitter#sidebar-splitter {
+  opacity: 0 !important;
+}
+
+splitter#sidebar-splitter {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+/* Скрытие иконки боковой панели */
+image#sidebar-icon {
+  display: none;
+}
+
+/* Отступы контента панелей */
+.panel-arrowcontent {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+/* Скрытие разделителей */
+toolbarseparator {
+  display: none;
+}
+
+/* Уменьшаем высоту всей панели вкладок */
+#TabsToolbar {
+  min-height: 30px !important; /* Стандартно ~40px, можно уменьшить до 20-30px */
+  max-height: 30px !important;
+  height: 30px !important;
+}
+
+/* Убираем лишние отступы внутри панели */
+#tabbrowser-tabs {
+  --tab-min-height: 25px !important; /* Высота самих вкладок */
+  --tab-min-width: 80px !important; /* Минимальная ширина вкладок */
+}
+
+/* Корректируем позицию кнопок (если они съезжают) */
+#TabsToolbar-customization-target {
+  height: 25px !important;
+  align-items: center !important;
+}
+
+/* Убираем лишние отступы вокруг вкладок */
+.tabbrowser-tab {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Уменьшаем высоту адресной строки */
+#urlbar-container,
+#urlbar {
+  --urlbar-min-height: 24px !important; /* Стандартно 34px */
+  --urlbar-toolbar-height: 24px !important;
+  --urlbar-icon-padding: 2px !important;
+}
+
+#urlbar-input-container {
+  height: 20px !important;
+  min-height: 20px !important;
+  align-items: center !important;
+}
