@@ -46,7 +46,7 @@ def rename_images(directory, dry_run=False):
             print(f"Успешно: {old_path} -> {new_path}")
         except PermissionError:
             print(f"Ошибка: нет прав для переименования {old_path}!")
-    except Exception as e:
+        except Exception as e:
             print(f"Ошибка при переименовании {old_path}: {e}")
 
 if __name__ == "__main__":
