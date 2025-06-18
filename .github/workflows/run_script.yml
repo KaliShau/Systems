@@ -22,13 +22,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y firefox
 
-      - name: Setup Geckodriver
-        run: |
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
-          tar -xvzf geckodriver*.tar.gz
-          sudo mv geckodriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/geckodriver
-
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -61,9 +54,10 @@ jobs:
         run: |
           python main.py
 
-      - name: Archive logs
+      - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mangabuff-logs
-          path: Scripts/clicker_mangabuff/logs/*
+          path: clicker_mangabuff/logs/*
+          retention-days: 3
