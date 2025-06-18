@@ -41,7 +41,7 @@ def init_firefox():
         opts.add_argument("--headless")
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
-    service = Service(executable_path='./geckodriver')
+    service = Service(executable_path='/usr/local/bin/geckodriver')  # Явный путь
     driver = webdriver.Firefox(service=service, options=opts)
     driver.maximize_window()
     return driver
