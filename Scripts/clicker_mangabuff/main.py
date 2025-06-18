@@ -39,14 +39,23 @@ def init_firefox():
     opts = FirefoxOptions()
     if CONFIG['headless']:
         opts.add_argument("--headless")
-    opts.add_argument("--no-sandbox") 
-    opts.add_argument("--disable-dev-shm-usage") 
-    opts.set_preference("dom.webdriver.enabled", False)
-    opts.set_preference("useAutomationExtension", False)
-    service = Service(executable_path='/usr/local/bin/geckodriver')
-    driver = webdriver.Firefox(service=service, options=opts)
-    driver.maximize_window()
-    return driver
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+    
+    # Для GitHub Actions
+    if os.getenv('GITHUB_ACTIONS') == 'true':
+        service = Service(executable_path='/usr/local/bin/geckodriver')
+    else:
+        # Локальная конфигурация
+        service = Service()
+    
+    try:
+        driver = webdriver.Firefox(service=service, options=opts)
+        driver.set_page_load_timeout(60)
+        return driver
+    except Exception as e:
+        print(f"Firefox initialization error: {str(e)}")
+        raise
 
 def login(driver):
     print("⌛ Выполняю вход...")
