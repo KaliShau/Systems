@@ -1,5 +1,6 @@
 import os
 import time
+from pathlib import Path
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
@@ -8,7 +9,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.service import Service
 
-load_dotenv()
+def load_config():
+    env_path = Path(__file__).parent / '.env'
+    if not env_path.exists():
+        env_path = Path.home() / '.mangabuff' / '.env'
+    
+    load_dotenv(env_path)
+
+load_config()
 
 CONFIG = {
     'email': os.getenv('EMAIL'),
