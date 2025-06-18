@@ -11,5 +11,7 @@
 ### Конфигурации:
 
 - [Bspwm](./bspwm/README.md) — тайловый оконный менеджер для Linux, который работает в среде X11.
+  ![Screenshot](./bspwm/assets/img-1.png)
 
 - [Firefox](./firefox/README.md) — браузер Firefox.
+  ![Screenshot](./firefox/assets/img-2.png)
