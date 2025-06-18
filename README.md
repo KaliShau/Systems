@@ -10,4 +10,6 @@
 
 ### Конфигурации:
 
-- [Bspwm](./bspwm/README.md) (Binary Space Partitioning Window Manager) — тайловый оконный менеджер для Linux, который работает в среде X11.
+- [Bspwm](./bspwm/README.md) — тайловый оконный менеджер для Linux, который работает в среде X11.
+
+- [Firefox](./firefox/README.md) — браузер Firefox.

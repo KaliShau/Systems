@@ -4,7 +4,7 @@ import os
 import random
 import subprocess
 
-background_dir = os.path.expanduser('~/.background')
+background_dir = os.path.expanduser('~/Documents/Backgrounds')
 
 images = [f for f in os.listdir(background_dir) if os.path.isfile(os.path.join(background_dir, f))]
 

@@ -50,6 +50,6 @@ def rename_images(directory, dry_run=False):
             print(f"Ошибка при переименовании {old_path}: {e}")
 
 if __name__ == "__main__":
-    directory = "/home/Shau/.background"
+    directory = input("Напиши путь к каталогу обоев: ")
     
     rename_images(directory, dry_run=False)
