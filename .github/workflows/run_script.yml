@@ -20,11 +20,12 @@ jobs:
       - name: Install GeckoDriver and Firefox
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox
+          sudo apt-get install -y firefox-esr
           wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
           tar -xvzf geckodriver*
           chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
+          echo "PATH=/usr/local/bin:$PATH" >> $GITHUB_ENV
 
       - name: Install Python dependencies
         run: |
