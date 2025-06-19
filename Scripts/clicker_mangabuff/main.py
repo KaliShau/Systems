@@ -64,34 +64,50 @@ def init_firefox():
 
 def login(driver):
     print("⌛ Выполняю вход...")
-    driver.get(CONFIG['login_url'])
+    driver.set_page_load_timeout(60)
+
+    for _ in range(3):
+        try:
+            driver.get(CONFIG['login_url'])
+            WebDriverWait(driver, 10).until(
+                lambda d: d.execute_script("return document.readyState") == "complete"
+            )
+            break
+        except:
+            print("🔄 Повторная попытка загрузки страницы...")
+            time.sleep(5)
     
-    email_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email']"))
+    email_field = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, 
+            "input[type='email'], input[name='email'], #email, [aria-label='Email']"))
     )
-    password_field = driver.find_element(By.CSS_SELECTOR, "input[type='password']")
-    submit_btn = driver.find_element(By.CSS_SELECTOR, ".login-button")
-
     email_field.send_keys(CONFIG['email'])
-    password_field.send_keys(CONFIG['password'])
-    submit_btn.click()
-
-    try:
-        WebDriverWait(driver, 15).until(
-            lambda d: d.current_url != CONFIG['login_url'] or
-            d.find_elements(By.CSS_SELECTOR, ".user-avatar, .logout-btn")
-        )
-        print("✓ Вход выполнен успешно")
-    except:
-        print("⚠ Нестандартное поведение после входа, продолжаем...")
     
-    driver.get(CONFIG['clicker_url'])
+    password_field = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR,
+            "input[type='password'], input[name='password'], #password"))
+    )
+    password_field.send_keys(CONFIG['password'])
+    
+    submit_btn = WebDriverWait(driver, 30).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR,
+            "button[type='submit'], .login-button, [value='Login']"))
+    )
+    submit_btn.click()
+    
+    WebDriverWait(driver, 30).until(
+        lambda d: "login" not in d.current_url.lower()
+    )
+    print("✓ Вход выполнен успешно")
+    print("⌛ Переход на страницу кликов...")
+    driver.get(CONFIG["clicker_url"])
 
 def perform_clicks(driver):
     print("🔍 Поиск кнопки для кликов...")
-    button = WebDriverWait(driver, 15).until(
+    button = WebDriverWait(driver, 30).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, CONFIG['click_button_selector']))
     )
+    print("✓ Кнопка найдена")
     
     print(f"🖱️ Начинаю выполнять клики...")
     for i in range(1, CONFIG['clicks_count'] + 1):
@@ -110,8 +126,7 @@ def main():
     except KeyboardInterrupt:
         print("\n🛑 Скрипт остановлен по запросу пользователя (Ctrl+C)")
     except Exception as e:
-        driver.save_screenshot("error.png")
-        print(f"Скриншот ошибки сохранён как error.png")
+        print(f"Ошибка: ", e)
         raise
     finally:
         driver.quit()
