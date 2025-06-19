@@ -59,7 +59,7 @@ jobs:
           EOT
 
       - name: Run clicker script
-        working-directory: ./Scripts/clicker_mangabuff
+        working-directory: Scripts/clicker_mangabuff
         run: |
           python main.py
 

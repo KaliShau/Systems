@@ -35,16 +35,24 @@ def validate_config():
         if not CONFIG[var]:
             raise ValueError(f'Отсутствует обязательная переменная: {var}')
 
+
 def init_firefox():
     opts = FirefoxOptions()
     if CONFIG['headless']:
         opts.add_argument("--headless")
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
+    
     service = Service(executable_path='/usr/local/bin/geckodriver') 
-    driver = webdriver.Firefox(service=service, options=opts)
-    driver.maximize_window()
-    return driver
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+
+    try:
+        driver = webdriver.Firefox(service=service, options=opts)
+        return driver
+    except Exception as e:
+        print(f"Ошибка инициализации Firefox: {str(e)}")
+        raise
 
 def login(driver):
     print("⌛ Выполняю вход...")
