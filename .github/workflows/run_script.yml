@@ -19,15 +19,24 @@ jobs:
 
       - name: Install Firefox and GeckoDriver
         run: |
+          # Устанавливаем Firefox как .deb пакет (не snap)
+          sudo mkdir -p /etc/apt/preferences.d
+          echo 'Package: firefox*' | sudo tee /etc/apt/preferences.d/firefox-no-snap
+          echo 'Pin: release o=Ubuntu*' | sudo tee -a /etc/apt/preferences.d/firefox-no-snap
+          echo 'Pin-Priority: -1' | sudo tee -a /etc/apt/preferences.d/firefox-no-snap
+
+          sudo add-apt-repository -y ppa:mozillateam/ppa
           sudo apt-get update
           sudo apt-get install -y firefox
 
+          # Устанавливаем GeckoDriver
           GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -Po '"tag_name": "\K[^"]*')
           wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
           tar -zxf geckodriver-*.tar.gz
           chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
 
+          # Устанавливаем зависимости
           sudo apt-get install -y xvfb libgtk-3-0 libdbus-glib-1-2
 
       - name: Debug versions
