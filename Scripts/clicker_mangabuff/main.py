@@ -60,6 +60,16 @@ def init_firefox():
     log_output='geckodriver.log') 
     driver = webdriver.Firefox(service=service, options=opts)
     driver.maximize_window()
+
+    stealth(driver,
+    languages=["en-US", "en"],
+    vendor="Google Inc.",
+    platform="Win32",
+    webgl_vendor="Intel Inc.",
+    renderer="Intel Iris OpenGL Engine",
+    fix_hairline=True,
+    )
+
     return driver
 
 def login(driver):
