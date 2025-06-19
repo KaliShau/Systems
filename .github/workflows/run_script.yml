@@ -19,25 +19,32 @@ jobs:
 
       - name: Install Firefox and GeckoDriver
         run: |
-          # Удаляем snap-версию Firefox если установлена
+          # Полностью удаляем snap-версию
           sudo snap remove --purge firefox 2>/dev/null || true
+          sudo apt-get remove --purge firefox* -y
 
-          # Блокируем установку Firefox как snap
+          # Блокируем snap
+          sudo rm -f /etc/apt/preferences.d/firefox-no-snap
           sudo mkdir -p /etc/apt/preferences.d
           echo 'Package: firefox*' | sudo tee /etc/apt/preferences.d/firefox-no-snap
           echo 'Pin: release o=Ubuntu*' | sudo tee -a /etc/apt/preferences.d/firefox-no-snap
           echo 'Pin-Priority: -1' | sudo tee -a /etc/apt/preferences.d/firefox-no-snap
 
-          # Добавляем PPA Mozilla Team
+          # Добавляем PPA
           sudo add-apt-repository -y ppa:mozillateam/ppa
 
-          # Устанавливаем политику для apt
+          # Устанавливаем приоритет для PPA
           echo 'Package: *' | sudo tee /etc/apt/preferences.d/mozillateamppa
           echo 'Pin: release o=LP-PPA-mozillateam' | sudo tee -a /etc/apt/preferences.d/mozillateamppa
           echo 'Pin-Priority: 1001' | sudo tee -a /etc/apt/preferences.d/mozillateamppa
 
+          # Устанавливаем Firefox
           sudo apt-get update
-          sudo apt-get install -y firefox
+          sudo apt-get install -y firefox firefox-locale-en
+
+          # Проверяем версию
+          echo "Установленная версия Firefox:"
+          dpkg -l | grep firefox
 
           # Устанавливаем GeckoDriver
           GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -Po '"tag_name": "\K[^"]*')
@@ -47,12 +54,15 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
 
           # Устанавливаем зависимости
-          sudo apt-get install -y xvfb libgtk-3-0 libdbus-glib-1-2
+          sudo apt-get install -y xvfb libgtk-3-0 libdbus-glib-1-2 libasound2
 
       - name: Debug versions
         run: |
+          echo "Firefox version:"
           firefox --version
+          echo "Geckodriver version:"
           geckodriver --version
+          echo "Installed Firefox packages:"
           dpkg -l | grep firefox
 
       - name: Install Python dependencies
@@ -69,8 +79,9 @@ jobs:
           CLICK_BUTTON_SELECTOR: ${{ secrets.CLICK_BUTTON_SELECTOR }}
           CLICKS_COUNT: ${{ secrets.CLICKS_COUNT }}
           DELAY_BETWEEN_CLICKS: ${{ secrets.DELAY_BETWEEN_CLICKS }}
-          HEADLESS: ${{ secrets.HEADLESS }}
-          TIMEOUT: ${{ secrets.TIMEOUT || '60' }}
+          HEADLESS: ${{ secrets.HEADLESS || 'true' }}
+          TIMEOUT: ${{ secrets.TIMEOUT || '120' }}
+          RETRIES: ${{ secrets.RETRIES || '5' }}
         run: |
           cat <<EOT > Scripts/clicker_mangabuff/.env
           EMAIL=$EMAIL
@@ -82,21 +93,26 @@ jobs:
           DELAY_BETWEEN_CLICKS=$DELAY_BETWEEN_CLICKS
           HEADLESS=$HEADLESS
           TIMEOUT=$TIMEOUT
+          RETRIES=$RETRIES
           EOT
 
       - name: Run clicker script with Xvfb
         working-directory: Scripts/clicker_mangabuff
         run: |
-          Xvfb :99 -screen 0 1024x768x16 &> /tmp/xvfb.log &
+          Xvfb :99 -screen 0 1920x1080x24 &> /tmp/xvfb.log &
           export DISPLAY=:99
+          export MOZ_HEADLESS_WIDTH=1920
+          export MOZ_HEADLESS_HEIGHT=1080
           python main.py
 
-      - name: Upload logs
+      - name: Upload logs and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mangabuff-logs
+          name: mangabuff-debug
           path: |
             Scripts/clicker_mangabuff/logs/*
             /tmp/xvfb.log
+            Scripts/clicker_mangabuff/*.png
+            Scripts/clicker_mangabuff/geckodriver.log
           retention-days: 3

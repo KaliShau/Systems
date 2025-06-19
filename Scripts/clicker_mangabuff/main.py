@@ -49,10 +49,12 @@ def init_firefox():
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
     opts.set_preference("network.http.phishy-userpass-length", 255)
+    opts.set_preference("intl.accept_languages", "en-US,en")
     
     service = Service(
         executable_path='/usr/local/bin/geckodriver',
-        log_path=os.path.join(os.getcwd(), 'geckodriver.log')
+        log_path=os.path.join(os.getcwd(), 'geckodriver.log'),
+        service_args=['--log', 'debug']
     )
     
     driver = webdriver.Firefox(service=service, options=opts)
