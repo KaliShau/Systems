@@ -24,13 +24,6 @@ jobs:
           sudo chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
 
-      - name: Set up Python
-        run: |
-          python3 -m venv venv 
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install selenium python-dotenv
-
       - name: Prepare .env
         env:
           EMAIL: ${{ secrets.EMAIL }}
@@ -57,7 +50,8 @@ jobs:
       - name: Run clicker script
         working-directory: Scripts/clicker_mangabuff
         run: |
-          source ../../venv/bin/activate
-          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-          export DISPLAY=:99
+          python3 -m venv venv 
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install selenium python-dotenv
           python main.py
