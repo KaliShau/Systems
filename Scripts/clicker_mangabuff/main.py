@@ -9,25 +9,40 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.service import Service
 
+
 def load_config():
-    env_path = Path(__file__).parent / '.env'
-    if not env_path.exists():
-        env_path = Path.home() / '.mangabuff' / '.env'
+    config = {
+        'email': os.environ.get('EMAIL'),
+        'password': os.environ.get('PASSWORD'),
+        'login_url': os.environ.get('LOGIN_URL'),
+        'clicker_url': os.environ.get('CLICKER_URL'),
+        'click_button_selector': os.environ.get('CLICK_BUTTON_SELECTOR'),
+        'clicks_count': int(os.environ.get('CLICKS_COUNT', 100)),
+        'delay': float(os.environ.get('DELAY_BETWEEN_CLICKS', 0.5)),
+        'headless': os.environ.get('HEADLESS', 'false').lower() == 'true'
+    }
     
-    load_dotenv(env_path)
+    if None in config.values():
+        env_path = Path(__file__).parent / '.env'
+        if not env_path.exists():
+            env_path = Path.home() / '.mangabuff' / '.env'
+        
+        if env_path.exists():
+            load_dotenv(env_path)
+            config.update({
+                'email': os.getenv('EMAIL'),
+                'password': os.getenv('PASSWORD'),
+                'login_url': os.getenv('LOGIN_URL'),
+                'clicker_url': os.getenv('CLICKER_URL'),
+                'click_button_selector': os.getenv('CLICK_BUTTON_SELECTOR'),
+                'clicks_count': int(os.getenv('CLICKS_COUNT', 100)),
+                'delay': float(os.getenv('DELAY_BETWEEN_CLICKS', 0.5)),
+                'headless': os.getenv('HEADLESS', 'false').lower() == 'true'
+            })
+    
+    return config
 
-load_config()
-
-CONFIG = {
-    'email': os.getenv('EMAIL'),
-    'password': os.getenv('PASSWORD'),
-    'login_url': os.getenv('LOGIN_URL'),
-    'clicker_url': os.getenv('CLICKER_URL'),
-    'click_button_selector': os.getenv('CLICK_BUTTON_SELECTOR'),
-    'clicks_count': int(os.getenv('CLICKS_COUNT', 100)),
-    'delay': float(os.getenv('DELAY_BETWEEN_CLICKS', 0.5)),
-    'headless': os.getenv('HEADLESS', 'false').lower() == 'true'
-}
+CONFIG = load_config()
 
 def validate_config():
     required = ['email', 'password', 'login_url', 'clicker_url', 'click_button_selector']

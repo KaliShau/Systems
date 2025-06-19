@@ -1,0 +1,28 @@
+jobs:
+  run-clicker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run Docker container
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          CLICKER_URL: ${{ secrets.CLICKER_URL }}
+          CLICK_BUTTON_SELECTOR: ${{ secrets.CLICK_BUTTON_SELECTOR }}
+          CLICKS_COUNT: ${{ secrets.CLICKS_COUNT }}
+          DELAY_BETWEEN_CLICKS: ${{ secrets.DELAY_BETWEEN_CLICKS }}
+          HEADLESS: ${{ secrets.HEADLESS }}
+        run: |
+          docker build -t mangabuff-clicker Scripts/clicker_mangabuff
+          docker run --rm \
+            -e EMAIL="$EMAIL" \
+            -e PASSWORD="$PASSWORD" \
+            -e LOGIN_URL="$LOGIN_URL" \
+            -e CLICKER_URL="$CLICKER_URL" \
+            -e CLICK_BUTTON_SELECTOR="$CLICK_BUTTON_SELECTOR" \
+            -e CLICKS_COUNT="$CLICKS_COUNT" \
+            -e DELAY_BETWEEN_CLICKS="$DELAY_BETWEEN_CLICKS" \
+            -e HEADLESS="$HEADLESS" \
+            mangabuff-clicker
