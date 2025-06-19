@@ -43,10 +43,14 @@ def init_firefox():
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
     
-    service = Service(executable_path='/usr/local/bin/geckodriver') 
+    opts.binary_location = "/usr/bin/firefox"
+    
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
-
+    opts.add_argument("--disable-gpu")
+    
+    service = Service(executable_path='/usr/local/bin/geckodriver')
+    
     try:
         driver = webdriver.Firefox(service=service, options=opts)
         return driver
@@ -94,6 +98,7 @@ def perform_clicks(driver):
 
 def main():
     validate_config()
+    time.sleep(2) 
     driver = init_firefox()
     
     try:

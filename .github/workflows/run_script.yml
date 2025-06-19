@@ -19,9 +19,14 @@ jobs:
 
       - name: Install GeckoDriver and Firefox
         run: |
-          sudo apt-get update
+          # Установка Firefox без Snap
+          sudo apt-get remove -y firefox
+          sudo add-apt-repository ppa:mozillateam/ppa -y
           sudo apt-get install -y firefox
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+
+          # Установка актуального geckodriver
+          GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep tag_name | cut -d '"' -f 4)
+          wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
           tar -xvzf geckodriver*
           chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
