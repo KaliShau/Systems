@@ -19,18 +19,15 @@ jobs:
 
       - name: Install Firefox and GeckoDriver
         run: |
-          # Установка последнего Firefox
           sudo apt-get update
           sudo apt-get install -y firefox
 
-          # Установка последнего GeckoDriver
           GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -Po '"tag_name": "\K[^"]*')
           wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
           tar -zxf geckodriver-*.tar.gz
           chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
 
-          # Установка зависимостей X11
           sudo apt-get install -y xvfb libgtk-3-0 libdbus-glib-1-2
 
       - name: Debug versions
@@ -66,7 +63,7 @@ jobs:
           EOT
 
       - name: Run clicker script
-        working-directory: ./Scripts/clicker_mangabuff
+        working-directory: Scripts/clicker_mangabuff
         run: |
           python main.py
 
