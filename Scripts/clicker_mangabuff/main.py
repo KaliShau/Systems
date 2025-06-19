@@ -52,66 +52,40 @@ def validate_config():
 
 def init_firefox():
     opts = FirefoxOptions()
-    if CONFIG['headless'] or os.getenv('CI_MODE'):
+    if CONFIG['headless']:
         opts.add_argument("--headless")
-    
-    # Критические настройки для CI
-    opts.add_argument("--disable-gpu")
-    opts.add_argument("--no-sandbox")
-    opts.add_argument("--disable-dev-shm-usage")
-    opts.add_argument("--window-size=1920,1080")
-    
-    # Увеличенные таймауты для CI
-    service = Service(
-        executable_path='/usr/local/bin/geckodriver',
-        service_args=['--log', 'debug'],
-        log_output="geckodriver.log"
-    )
-    
-    # Явное ожидание драйвера
-    driver = webdriver.Firefox(
-        service=service,
-        options=opts,
-        timeout=30 
-    )
+    opts.set_preference("dom.webdriver.enabled", False)
+    opts.set_preference("useAutomationExtension", False)
+    service = Service(executable_path='/usr/local/bin/geckodriver',    service_args=['--log', 'debug'],
+    log_output='geckodriver.log') 
+    driver = webdriver.Firefox(service=service, options=opts)
+    driver.maximize_window()
     return driver
 
 def login(driver):
     print("⌛ Выполняю вход...")
+    driver.get(CONFIG['login_url'])
+    
+    email_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email']"))
+    )
+    password_field = driver.find_element(By.CSS_SELECTOR, "input[type='password']")
+    submit_btn = driver.find_element(By.CSS_SELECTOR, ".login-button")
+
+    email_field.send_keys(CONFIG['email'])
+    password_field.send_keys(CONFIG['password'])
+    submit_btn.click()
+
     try:
-        driver.set_page_load_timeout(45)  # Увеличенный таймаут загрузки
-        driver.get(CONFIG['login_url'])
-        
-        # Дополнительные ожидания для CI
-        WebDriverWait(driver, 45).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
+        WebDriverWait(driver, 15).until(
+            lambda d: d.current_url != CONFIG['login_url'] or
+            d.find_elements(By.CSS_SELECTOR, ".user-avatar, .logout-btn")
         )
-        
-        # Альтернативные селекторы
-        email_field = WebDriverWait(driver, 45).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email'], input[name='email']"))
-        )
-        email_field.send_keys(CONFIG['email'])
-        
-        password_field = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password'], input[name='password']"))
-        )
-        password_field.send_keys(CONFIG['password'])
-        
-        submit_btn = WebDriverWait(driver, 30).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit'], .login-button, input[type='submit']"))
-        )
-        submit_btn.click()
-        
-        # Проверка успешного входа
-        WebDriverWait(driver, 45).until(
-            lambda d: "login" not in d.current_url.lower()
-        )
-        
-    except Exception as e:
-        driver.save_screenshot("login_error.png")
-        print("🔄 Попытка альтернативного метода входа...")
-        raise
+        print("✓ Вход выполнен успешно")
+    except:
+        print("⚠ Нестандартное поведение после входа, продолжаем...")
+    
+    driver.get(CONFIG['clicker_url'])
 
 def perform_clicks(driver):
     print("🔍 Поиск кнопки для кликов...")
