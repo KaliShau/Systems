@@ -2,7 +2,7 @@ name: MangaBuff Clicker
 
 on:
   schedule:
-    - cron: "0 5 * * *" # 05:00 UTC = 08:00 МСК (UTC+3)
+    - cron: "0 5 * * *" # 08:00 МСК
   workflow_dispatch:
 
 jobs:
@@ -12,9 +12,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
 
-      - name: Build and run Docker container
+      - name: Build and run with Xvfb
         env:
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
@@ -23,11 +26,11 @@ jobs:
           CLICK_BUTTON_SELECTOR: ${{ secrets.CLICK_BUTTON_SELECTOR }}
           CLICKS_COUNT: ${{ secrets.CLICKS_COUNT }}
           DELAY_BETWEEN_CLICKS: ${{ secrets.DELAY_BETWEEN_CLICKS }}
-          HEADLESS: ${{ secrets.HEADLESS }}
+          HEADLESS: "true"
         run: |
-          cd Scripts/clicker_mangabuff
-          docker build -t mangabuff-clicker .
+          docker build -t mangabuff-clicker Scripts/clicker_mangabuff
           docker run --rm \
+            -e DISPLAY=:99 \
             -e EMAIL="$EMAIL" \
             -e PASSWORD="$PASSWORD" \
             -e LOGIN_URL="$LOGIN_URL" \
@@ -36,4 +39,5 @@ jobs:
             -e CLICKS_COUNT="$CLICKS_COUNT" \
             -e DELAY_BETWEEN_CLICKS="$DELAY_BETWEEN_CLICKS" \
             -e HEADLESS="$HEADLESS" \
+            -e CI_MODE="true" \
             mangabuff-clicker

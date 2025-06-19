@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libdbus-glib-1-2 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz \
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz \
     && tar -xvzf geckodriver* \
     && chmod +x geckodriver \
     && mv geckodriver /usr/local/bin/
