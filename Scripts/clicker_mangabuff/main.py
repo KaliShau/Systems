@@ -45,6 +45,7 @@ def init_firefox():
     
     opts.binary_location = "/usr/bin/firefox"
     
+    opts.binary_location = "/usr/bin/firefox"
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")

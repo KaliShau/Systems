@@ -17,11 +17,11 @@ jobs:
       - name: Setup Arch Linux environment
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm python3 python-pip firefox xorg-server-xvfb sudo base-devel wget libxt dbus-glib gtk3
+          pacman -S --noconfirm python python-pip firefox xorg-server-xvfb sudo base-devel wget dbus-glib gtk3 libxt
 
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
-          tar -xvzf geckodriver*
-          sudo chmod +x geckodriver
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+          tar -xvzf geckodriver*.tar.gz
+          chmod +x geckodriver
           sudo mv geckodriver /usr/local/bin/
 
       - name: Prepare .env
