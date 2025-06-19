@@ -2,7 +2,7 @@ name: MangaBuff Clicker
 
 on:
   schedule:
-    - cron: "0 5 * * *" # 08:00 МСК (UTC+3)
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
 jobs:
@@ -14,15 +14,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Arch Linux environment
+      - name: Setup environment
         run: |
+          # Обновление и установка пакетов
           pacman -Syu --noconfirm
-          pacman -S --noconfirm python3 python-pip firefox xorg-server-xvfb sudo base-devel wget
+          pacman -S --noconfirm python python-pip firefox geckodriver xorg-server-xvfb sudo base-devel dbus
 
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
-          tar -xvzf geckodriver*
-          sudo chmod +x geckodriver
-          sudo mv geckodriver /usr/local/bin/
+          # Настройка DBUS
+          dbus-uuidgen > /var/lib/dbus/machine-id
+          dbus-daemon --system --fork
+
+          # Установка переменной DISPLAY
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Set up Python
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install selenium python-dotenv
 
       - name: Prepare .env
         env:
@@ -47,11 +56,9 @@ jobs:
           HEADLESS=$HEADLESS
           EOT
 
-      - name: Run clicker script
+      - name: Run script
         working-directory: Scripts/clicker_mangabuff
         run: |
-          python3 -m venv venv 
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install selenium python-dotenv
+          source ../../venv/bin/activate
+          Xvfb :99 -screen 0 1920x1080x24 -ac +extension GLX +render -noreset &
           python main.py

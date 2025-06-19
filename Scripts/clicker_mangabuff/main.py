@@ -40,8 +40,12 @@ def init_firefox():
     opts = FirefoxOptions()
     if CONFIG['headless']:
         opts.add_argument("--headless")
+        opts.add_argument("--width=1920")
+        opts.add_argument("--height=1080")
+    
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
+    opts.set_preference("marionette.enabled", True)
     
     opts.binary_location = "/usr/bin/firefox"
     
@@ -49,10 +53,14 @@ def init_firefox():
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
     
-    service = Service(executable_path='/usr/local/bin/geckodriver')
+    service = Service(
+        executable_path='/usr/bin/geckodriver',
+        service_args=['--marionette-port', '2828', '--log', 'debug'],
+    )
     
     try:
         driver = webdriver.Firefox(service=service, options=opts)
+        driver.set_window_size(1920, 1080)
         return driver
     except Exception as e:
         print(f"Ошибка инициализации Firefox: {str(e)}")
