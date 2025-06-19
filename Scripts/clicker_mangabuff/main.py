@@ -39,12 +39,12 @@ def init_firefox():
     opts = FirefoxOptions()
     if CONFIG['headless']:
         opts.add_argument("--headless")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
-    service = Service(executable_path='/usr/local/bin/geckodriver') 
-    driver = webdriver.Firefox(service=service, options=opts)
-    driver.maximize_window()
-    return driver
+    service = Service(executable_path='/usr/local/bin/geckodriver')
+    return webdriver.Firefox(service=service, options=opts)
 
 def login(driver):
     print("⌛ Выполняю вход...")
