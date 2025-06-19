@@ -1,4 +1,0 @@
-# Packages
-
-selenium
-python-dotenv
