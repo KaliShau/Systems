@@ -1,8 +1,21 @@
+name: MangaBuff Clicker
+
+on:
+  schedule:
+    - cron: "0 5 * * *" # 05:00 UTC = 08:00 МСК (UTC+3)
+  workflow_dispatch:
+
 jobs:
   run-clicker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
 
       - name: Build and run Docker container
         env:
@@ -15,7 +28,8 @@ jobs:
           DELAY_BETWEEN_CLICKS: ${{ secrets.DELAY_BETWEEN_CLICKS }}
           HEADLESS: ${{ secrets.HEADLESS }}
         run: |
-          docker build -t mangabuff-clicker Scripts/clicker_mangabuff
+          cd Scripts/clicker_mangabuff
+          docker build -t mangabuff-clicker .
           docker run --rm \
             -e EMAIL="$EMAIL" \
             -e PASSWORD="$PASSWORD" \
