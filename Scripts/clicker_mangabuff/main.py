@@ -56,8 +56,7 @@ def init_firefox():
         opts.add_argument("--headless")
     opts.set_preference("dom.webdriver.enabled", False)
     opts.set_preference("useAutomationExtension", False)
-    service = Service(executable_path='/usr/local/bin/geckodriver',    service_args=['--log', 'debug'],
-    log_output='geckodriver.log') 
+    service = Service(executable_path='/usr/local/bin/geckodriver') 
     driver = webdriver.Firefox(service=service, options=opts)
     driver.maximize_window()
     return driver
@@ -104,16 +103,35 @@ def login(driver):
 
 def perform_clicks(driver):
     print("🔍 Поиск кнопки для кликов...")
-    button = WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, CONFIG['click_button_selector']))
-    )
-    print("✓ Кнопка найдена")
     
-    print(f"🖱️ Начинаю выполнять клики...")
-    for i in range(1, CONFIG['clicks_count'] + 1):
-        button.click()
-        print(f"✅ Клик {i}")
-        time.sleep(CONFIG['delay'])
+    successful_clicks = 0
+    attempts = 0
+    max_attempts = CONFIG['clicks_count'] * 2  
+    
+    while successful_clicks < CONFIG['clicks_count'] and attempts < max_attempts:
+        try:
+            button = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, CONFIG['click_button_selector']))
+            )
+            
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
+            time.sleep(0.2)  
+            
+            button.click()
+            successful_clicks += 1
+            print(f"✅ Клик {successful_clicks}")
+            time.sleep(CONFIG['delay'])
+            
+        except (StaleElementReferenceException, ElementClickInterceptedException, NoSuchElementException) as e:
+            print(f"⚠️ Ошибка при клике {successful_clicks + 1}: {str(e)[:100]}... Попытка восстановления...")
+            time.sleep(1)  
+            
+        attempts += 1
+    
+    if successful_clicks < CONFIG['clicks_count']:
+        print(f"⚠️ Выполнено только {successful_clicks} из {CONFIG['clicks_count']} кликов")
+    else:
+        print(f"🎉 Все {CONFIG['clicks_count']} кликов успешно выполнены!")
 
 def main():
     validate_config()
@@ -122,7 +140,6 @@ def main():
     try:
         login(driver)
         perform_clicks(driver)
-        print("🎉 Все клики успешно выполнены!")
     except KeyboardInterrupt:
         print("\n🛑 Скрипт остановлен по запросу пользователя (Ctrl+C)")
     except Exception as e:
